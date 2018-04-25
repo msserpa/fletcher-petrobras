@@ -13,7 +13,7 @@ enum Form {ISO, VTI, TTI};
 
 #define MI 0.2           // stability factor to compute dt
 #define ARGS 11          // tokens in executable command
-#define dtOutput 0.01    // time spacing for section output
+#define dtOutput 0.001    // time spacing for section output
 
 //#define _DUMP       // execution summary dump
 //#undef  _DUMP     // execution summary dump
