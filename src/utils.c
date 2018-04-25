@@ -201,8 +201,9 @@ SlicePtr OpenSliceFile2(int ixStart, int ixEnd,
 void DumpSliceFile2(int sx, int sy, int sz, int it,
 		   float *arrP, SlicePtr p) {
 
-      printf("test: %d %lf\n", it, it * sizeof(float)  * (p->izEnd - p->izStart + 1) * (p->iyEnd - p->iyStart + 1) * (p->ixEnd-p->ixStart+1));
-      fseek(p->fpBinary, it * sizeof(float)  * (p->izEnd - p->izStart + 1) * (p->iyEnd - p->iyStart + 1) * (p->ixEnd-p->ixStart+1), SEEK_SET);
+      printf("test: %d %ld\n", it,  it * sizeof(float)  * (p->izEnd - p->izStart + 1) * (p->iyEnd - p->iyStart + 1) * (p->ixEnd-p->ixStart+1));
+      if(fseek(p->fpBinary, it * sizeof(float)  * (p->izEnd - p->izStart + 1) * (p->iyEnd - p->iyStart + 1) * (p->ixEnd-p->ixStart+1), SEEK_SET) == 1)
+        printf("error\n");
 
       fread((void *) (arrP),
 	     sizeof(float),
