@@ -19,14 +19,6 @@ void   DumpFieldToFile(int sx, int sy, int sz,
 		       float d1, float d2, float d3,
 		       float *arrP, char *fName);
 
-void   DumpFieldToFile2(int sx, int sy, int sz,
-           int ixStart, int ixEnd,
-           int iyStart, int iyEnd,
-           int izStart, int izEnd,
-           float d1, float d2, float d3,
-           float *arrP, char *fName);
-
-
 // SlicePtr: contains all info to progressely dump an array that changes over time into an RFS file
 
 
@@ -71,6 +63,11 @@ SlicePtr OpenSliceFile(int ixStart, int ixEnd,
 		       float dx, float dy, float dz, float dt,
 		       char *fName);
 
+SlicePtr OpenSliceFile2(int ixStart, int ixEnd,
+           int iyStart, int iyEnd,
+           int izStart, int izEnd,
+           float dx, float dy, float dz, float dt,
+           char *fName);
 
 // DumpSliceFile: appends one array to an opened RFS file 
 
@@ -78,11 +75,15 @@ SlicePtr OpenSliceFile(int ixStart, int ixEnd,
 void DumpSliceFile(int sx, int sy, int sz,
 		   float *arrP, SlicePtr p);
 
+void DumpSliceFile2(int sx, int sy, int sz,
+       float *arrP, SlicePtr p)
 
 // CloseSliceFile: close file in RFS format that has been continuously appended
 
 
 void CloseSliceFile(SlicePtr p);
+
+void CloseSliceFile2(SlicePtr p);
 
 
 // DumpSliceSummary: prints info of one array 
