@@ -452,6 +452,10 @@ int main(int argc, char** argv) {
   fprintf(stderr, "I/O took  %8.5lf sec\n\n", f_io_total);
 
   /* benchmark */
+  tSim=0.0;
+  nOut=1;
+  tOut=nOut*dtOutput;
+
     #ifndef ACC_MANAGED
 
     #pragma acc data copyin(ch1dxx[0:sx*sy*sz], ch1dyy[0:sx*sy*sz], ch1dzz[0:sy*sy*sz], \
