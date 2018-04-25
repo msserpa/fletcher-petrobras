@@ -11,6 +11,44 @@
 //            either forward or backward in time
 
 
+void Compare(int sx, int sy, int sz, int bord,
+	       float * restrict pp, float * restrict pback, float * restrict out) {
+  int ix, iy, iz, i;
+
+
+#ifndef _OPENACC
+  
+#pragma omp parallel for private(ix, iy, iz, i)
+#else
+
+#ifndef ACC_MANAGED
+
+#pragma acc kernels							\
+  present(pp[0:sx*sy*sz], pback[0:sx*sy*sz])
+
+#else
+
+#pragma acc kernels
+
+#endif
+
+#endif
+
+#pragma acc loop independent
+    for (iz=bord; iz<sz-bord; iz++) {
+#pragma acc loop independent
+      for (iy=bord; iy<sy-bord; iy++) {
+#pragma acc loop independent
+	for (ix=bord; ix<sx-bord; ix++) {
+	  i=ind(ix,iy,iz);
+	      
+	  out[i] += pp[i] * pback[i];
+
+	}
+      }
+    } // end nested for loops
+}
+
 void Propagate(int sx, int sy, int sz, int bord,
 	       float dx, float dy, float dz, float dt, int it, 
 	       float * restrict ch1dxx, float * restrict ch1dyy, float * restrict ch1dzz, 
