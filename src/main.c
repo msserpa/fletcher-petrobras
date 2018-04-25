@@ -314,6 +314,9 @@ int main(int argc, char** argv) {
 
   // pressure fields at previous, current and future time steps
   
+  float *pback=NULL;
+  pback = (float *) malloc(sx*sy*sz*sizeof(float)); 
+
   float *pp=NULL;
   pp = (float *) malloc(sx*sy*sz*sizeof(float)); 
   float *pc=NULL;
@@ -448,10 +451,19 @@ int main(int argc, char** argv) {
     }
   }
 
-  fprintf(stderr, "\nProp took %8.5lf sec\n", f_total);
+  fprintf(stderr, "\nForward took %8.5lf sec\n", f_total);
   fprintf(stderr, "I/O took  %8.5lf sec\n\n", f_io_total);
 
+CloseSliceFile(sPtr);
+
   /* benchmark */
+  SlicePtr sPtr2;
+  sPtr2=OpenSliceFile2(ixStart, ixEnd,
+         iyStart, iyEnd,
+         izStart, izEnd,
+         dx, dy, dz, dt,
+         fNameSec);
+
   tSim=0.0;
   nOut=1;
   tOut=nOut*dtOutput;
@@ -490,15 +502,15 @@ int main(int argc, char** argv) {
     if (tSim >= tOut) {
 #ifndef ACC_MANAGED
 
-#pragma acc update host(pc[0:sx*sy*sz])
-
 #endif
       b_io_start = omp_get_wtime();
-      DumpSliceFile(sx,sy,sz,pc,sPtr);
+      DumpSliceFile2(sx,sy,sz,pback,sPtr2);
       b_io_stop = omp_get_wtime();
       b_io_total += (b_io_stop - b_io_start);
 
-      fprintf(stderr, "step %3d writted %.2lf MB in %8.5lf sec\n", it, (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float) / 1024.0 / 1024.0, b_io_stop - b_io_start);
+      fprintf(stderr, "step %3d read %.2lf MB in %8.5lf sec\n", it, (sPtr2->izEnd - sPtr2->izStart + 1) * (sPtr2->iyEnd - sPtr2->iyStart + 1) * (sPtr2->ixEnd-sPtr2->ixStart+1) * sizeof(float) / 1024.0 / 1024.0, b_io_stop - b_io_start);
+
+      #pragma acc update device(pback[0:sx*sy*sz])
 
       tOut=(++nOut)*dtOutput;
 #ifdef _DUMP
@@ -507,10 +519,10 @@ int main(int argc, char** argv) {
     }
   }
 
-  fprintf(stderr, "\nProp took %8.5lf sec\n", b_total);
+  fprintf(stderr, "\nBackward took %8.5lf sec\n", b_total);
   fprintf(stderr, "I/O took  %8.5lf sec\n\n", b_io_total);
 
-  CloseSliceFile(sPtr);
+CloseSliceFile2(sPtr2);
 
   exit(0);    
 }

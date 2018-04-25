@@ -19,6 +19,13 @@ void   DumpFieldToFile(int sx, int sy, int sz,
 		       float d1, float d2, float d3,
 		       float *arrP, char *fName);
 
+void   DumpFieldToFile2(int sx, int sy, int sz,
+           int ixStart, int ixEnd,
+           int iyStart, int iyEnd,
+           int izStart, int izEnd,
+           float d1, float d2, float d3,
+           float *arrP, char *fName);
+
 
 // SlicePtr: contains all info to progressely dump an array that changes over time into an RFS file
 

@@ -131,12 +131,84 @@ SlicePtr OpenSliceFile(int ixStart, int ixEnd,
   return(ret);
 }
 
+SlicePtr OpenSliceFile2(int ixStart, int ixEnd,
+           int iyStart, int iyEnd,
+           int izStart, int izEnd,
+           float dx, float dy, float dz, float dt,
+           char *fName) {
+//PPL  char procName[128]="**(OpenSliceFile)**";
+  SlicePtr ret;
+  ret = (SlicePtr) malloc(sizeof(Slice));
+
+  // verify slice direction
+
+  if (ixStart==ixEnd)
+    ret->direction=XSLICE;
+  else if (iyStart==iyEnd)
+    ret->direction=YSLICE;
+  else if (izStart==izEnd)
+    ret->direction=ZSLICE;
+  else {
+    ret->direction=FULL;
+  }
+
+  // header and binary file names
+  
+  strcpy(ret->fNameHeader,fName);
+  strcat(ret->fNameHeader,".rfs");
+  strcpy(ret->fNameBinary,FNAMEBINARYPATH);
+  strcat(ret->fNameBinary,ret->fNameHeader);
+  strcat(ret->fNameBinary,"@");
+
+  // create header and binary files in rfs format
+  
+  ret->fpHead=fopen(ret->fNameHeader, "r+");
+  ret->fpBinary=fopen(ret->fNameBinary, "r+");
+  ret->ixStart=ixStart;
+  ret->ixEnd=ixEnd;
+  ret->iyStart=iyStart;
+  ret->iyEnd=iyEnd;
+  ret->izStart=izStart;
+  ret->izEnd=izEnd;
+  ret->itCnt=0;
+  ret->dx=dx;
+  ret->dy=dy;
+  ret->dz=dz;
+  ret->dt=dt;
+
+  char sName[16];
+  switch(ret->direction) {
+  case XSLICE:
+    strcpy(sName,"XSlice");
+    break;
+  case YSLICE:
+    strcpy(sName,"YSlice");
+    break;
+  case ZSLICE:
+    strcpy(sName,"ZSlice");
+    break;
+  case FULL:
+    strcpy(sName,"Grid Section");
+    break;
+  }
+  return(ret);
+}
+
 
 // DumpSliceFile: appends one array to an opened RFS file 
 
 
-void DumpSliceFile(int sx, int sy, int sz,
+void DumpSliceFile2(int sx, int sy, int sz,
 		   float *arrP, SlicePtr p) {
+
+      fread((void *) (arrP),
+	     sizeof(float),
+	     (p->izEnd - p->izStart + 1) * (p->iyEnd - p->iyStart + 1) * (p->ixEnd-p->ixStart+1),
+	     p->fpBinary);
+}
+
+void DumpSliceFile(int sx, int sy, int sz,
+       float *arrP, SlicePtr p) {
 
 //PPL  int ix, iy, iz;
   int iy, iz;
@@ -145,9 +217,9 @@ void DumpSliceFile(int sx, int sy, int sz,
   for (iz=p->izStart; iz<=p->izEnd; iz++)
     for (iy=p->iyStart; iy<=p->iyEnd; iy++) 
       fwrite((void *) (arrP+ind(p->ixStart,iy,iz)),
-	     sizeof(float),
-	     p->ixEnd-p->ixStart+1,
-	     p->fpBinary);
+       sizeof(float),
+       p->ixEnd-p->ixStart+1,
+       p->fpBinary);
 
   // increase it count
   
@@ -203,6 +275,13 @@ void CloseSliceFile(SlicePtr p){
   fclose(p->fpBinary);
 }
 
+
+void CloseSliceFile2(SlicePtr p){
+
+
+  fclose(p->fpHead);
+  fclose(p->fpBinary);
+}
 
 // DumpSliceSummary: prints info of one array 
 
