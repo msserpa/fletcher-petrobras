@@ -417,7 +417,7 @@ int main(int argc, char** argv) {
 
     tSim=it*dt;
     if (tSim >= tOut) {
-      fprintf(stderr, "step %f is writting %lld Bytes\n", tSim, (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float));
+      fprintf(stderr, "step %d is writting %.3lf MB\n", it, (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float) / 1024.0 / 1024.0);
 
 #ifndef ACC_MANAGED
 
