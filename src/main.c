@@ -510,8 +510,9 @@ CloseSliceFile(sPtr);
 
       fprintf(stderr, "step %3d read %.2lf MB in %8.5lf sec\n", it, (sPtr2->izEnd - sPtr2->izStart + 1) * (sPtr2->iyEnd - sPtr2->iyStart + 1) * (sPtr2->ixEnd-sPtr2->ixStart+1) * sizeof(float) / 1024.0 / 1024.0, b_io_stop - b_io_start);
 
-      printf("")
-       #pragma acc update device(pback[0:sx*sy*sz])
+      #pragma acc update device(pback[0:sx*sy*sz])
+
+      printf("teste: %lf %lf - %lf %lf - %lf %lf, %lf %lf\n", pp[0], pback[0], pp[sx-1], pback[sx-1], pp[sx*sy-1], pback[sx*sy-1], pp[sx*sy*sz-1], pback[sx*sy*sz-1]);
 
       tOut=(++nOut)*dtOutput;
 #ifdef _DUMP
