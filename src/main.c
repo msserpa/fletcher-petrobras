@@ -486,7 +486,7 @@ int main(int argc, char** argv) {
       b_io_stop = omp_get_wtime();
       b_io_total += (b_io_stop - b_io_start);
 
-      fprintf(stderr, "step %3d writted %.2lf MB in %8.5lf sec\n", it, (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float) / 1024.0 / 1024.0, io_stop - io_start);
+      fprintf(stderr, "step %3d writted %.2lf MB in %8.5lf sec\n", it, (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float) / 1024.0 / 1024.0, b_io_stop - b_io_start);
 
       tOut=(++nOut)*dtOutput;
 #ifdef _DUMP
