@@ -452,7 +452,15 @@ int main(int argc, char** argv) {
   fprintf(stderr, "I/O took  %8.5lf sec\n\n", f_io_total);
 
   /* benchmark */
+    #ifndef ACC_MANAGED
 
+    #pragma acc data copyin(ch1dxx[0:sx*sy*sz], ch1dyy[0:sx*sy*sz], ch1dzz[0:sy*sy*sz], \
+          ch1dxy[0:sx*sy*sz], ch1dyz[0:sx*sy*sz], ch1dxz[0:sx*sy*sz], \
+          v2px[0:sx*sy*sz], v2pz[0:sx*sy*sz], v2sz[0:sx*sy*sz], \
+          v2pn[0:sx*sy*sz], pc[0:sz*sy*sz], qc[0:sz*sy*sz], \
+          pp[0:sx*sy*sz], qp[0:sx*sy*sz], fatAbsorb[sx*sy*sz])
+
+    #endif
     for (it=1; it<=st; it++) {
     b_start = omp_get_wtime();
 
