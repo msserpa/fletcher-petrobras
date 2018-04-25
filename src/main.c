@@ -380,7 +380,7 @@ int main(int argc, char** argv) {
   float tSim=0.0;
   int nOut=1;
   float tOut=nOut*dtOutput;
-  fprintf(stderr, "writting %d Bytes\n", (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float));
+  fprintf(stderr, "step 0 is writting %.2lf MB\n", (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float) / 1024.0 / 1024.0);
   DumpSliceFile(sx,sy,sz,pc,sPtr);
 #ifdef _DUMP
   DumpSlicePtr(sPtr);
@@ -417,7 +417,7 @@ int main(int argc, char** argv) {
 
     tSim=it*dt;
     if (tSim >= tOut) {
-      fprintf(stderr, "step %d is writting %.3lf MB\n", it, (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float) / 1024.0 / 1024.0);
+      fprintf(stderr, "step %d is writting %.2lf MB\n", it, (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float) / 1024.0 / 1024.0);
 
 #ifndef ACC_MANAGED
 
