@@ -360,8 +360,10 @@ int main(int argc, char** argv) {
   }
 #endif
 
-  double io_start, io_stop, io_total = 0.0;
-  double c_start, c_stop, c_total = 0.0;
+  double f_start, f_stop, f_total = 0.0;
+  double f_io_start, f_io_stop, f_io_total = 0.0;
+  double b_start, b_stop, b_total = 0.0;
+  double b_io_start, b_io_stop, b_io_total = 0.0;
 
   // slices
 
@@ -405,7 +407,7 @@ int main(int argc, char** argv) {
 
 #endif
   for (it=1; it<=st; it++) {
-    c_start = omp_get_wtime();
+    f_start = omp_get_wtime();
 
     Propagate(sx, sy, sz, bord,
 	      dx, dy, dz, dt, it,
@@ -422,8 +424,8 @@ int main(int argc, char** argv) {
     AbsorbingBoundary(sx, sy, sz, fatAbsorb, pc, qc);
 #endif
 
-    c_stop = omp_get_wtime();
-    c_total += (c_stop - c_start);
+    f_stop = omp_get_wtime();
+    f_total += (f_stop - f_start);
 
     tSim=it*dt;
     if (tSim >= tOut) {
@@ -432,10 +434,10 @@ int main(int argc, char** argv) {
 #pragma acc update host(pc[0:sx*sy*sz])
 
 #endif
-      io_start = omp_get_wtime();
+      f_io_start = omp_get_wtime();
       DumpSliceFile(sx,sy,sz,pc,sPtr);
-      io_stop = omp_get_wtime();
-      io_total += (io_stop - io_start);
+      f_io_stop = omp_get_wtime();
+      f_io_total += (f_io_stop - f_io_start);
 
       fprintf(stderr, "step %3d writted %.2lf MB in %8.5lf sec\n", it, (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float) / 1024.0 / 1024.0, io_stop - io_start);
 
@@ -446,8 +448,56 @@ int main(int argc, char** argv) {
     }
   }
 
-  fprintf(stderr, "\nProp took %8.5lf sec\n", c_total);
-  fprintf(stderr, "I/O took  %8.5lf sec\n\n", io_total);
+  fprintf(stderr, "\nProp took %8.5lf sec\n", f_total);
+  fprintf(stderr, "I/O took  %8.5lf sec\n\n", f_io_total);
+
+  /* benchmark */
+
+    for (it=1; it<=st; it++) {
+    b_start = omp_get_wtime();
+
+    Propagate(sx, sy, sz, bord,
+        dx, dy, dz, dt, it,
+        ch1dxx, ch1dyy, ch1dzz, 
+        ch1dxy, ch1dyz, ch1dxz, 
+        v2px, v2pz, v2sz, v2pn,
+        pp, pc, qp, qc);
+
+    TimeForward(&pp, &pc, &qp, &qc);
+
+    InsertSourceTimestep(dt,it,iSource,pc,qc);
+
+#if ((defined _ABSOR_SPHERE) || (defined _ABSOR_SQUARE))
+    AbsorbingBoundary(sx, sy, sz, fatAbsorb, pc, qc);
+#endif
+
+    b_stop = omp_get_wtime();
+    b_total += (b_stop - b_start);
+
+    tSim=it*dt;
+    if (tSim >= tOut) {
+#ifndef ACC_MANAGED
+
+#pragma acc update host(pc[0:sx*sy*sz])
+
+#endif
+      b_io_start = omp_get_wtime();
+      DumpSliceFile(sx,sy,sz,pc,sPtr);
+      b_io_stop = omp_get_wtime();
+      b_io_total += (b_io_stop - b_io_start);
+
+      fprintf(stderr, "step %3d writted %.2lf MB in %8.5lf sec\n", it, (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float) / 1024.0 / 1024.0, io_stop - io_start);
+
+      tOut=(++nOut)*dtOutput;
+#ifdef _DUMP
+      DumpSliceSummary(sx,sy,sz,sPtr,dt,it,pc);
+#endif
+    }
+  }
+
+  fprintf(stderr, "\nProp took %8.5lf sec\n", b_total);
+  fprintf(stderr, "I/O took  %8.5lf sec\n\n", b_io_total);
+
   CloseSliceFile(sPtr);
 
   exit(0);    
