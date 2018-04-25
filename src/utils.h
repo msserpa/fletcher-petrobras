@@ -75,7 +75,7 @@ SlicePtr OpenSliceFile2(int ixStart, int ixEnd,
 void DumpSliceFile(int sx, int sy, int sz,
 		   float *arrP, SlicePtr p);
 
-void DumpSliceFile2(int sx, int sy, int sz,
+void DumpSliceFile2(int sx, int sy, int sz, int it,
        float *arrP, SlicePtr p);
 
 // CloseSliceFile: close file in RFS format that has been continuously appended

@@ -468,9 +468,9 @@ CloseSliceFile(sPtr);
          dx, dy, dz, dt,
          fNameSec);
 
-  tSim=0.0;
-  nOut=1;
-  tOut=nOut*dtOutput;
+  float tSim2=0.0;
+  int nOut2=1;
+  float tOut2=nOut2*dtOutput;
 
     #ifndef ACC_MANAGED
 
@@ -502,13 +502,13 @@ CloseSliceFile(sPtr);
     b_stop = omp_get_wtime();
     b_total += (b_stop - b_start);
 
-    tSim=it*dt;
-    if (tSim >= tOut) {
+    tSim2=it*dt;
+    if (tSim2 >= tOut2) {
 #ifndef ACC_MANAGED
 
 #endif
       b_io_start = omp_get_wtime();
-      DumpSliceFile2(sx,sy,sz,pback,sPtr2);
+      DumpSliceFile2(sx,sy,sz,nOut - nOut2,pback,sPtr2);
       b_io_stop = omp_get_wtime();
       b_io_total += (b_io_stop - b_io_start);
 
@@ -519,7 +519,7 @@ CloseSliceFile(sPtr);
       Compare(sx, sy, sz, bord,
         pp, pback, outt);
 
-      tOut=(++nOut)*dtOutput;
+      tOut2=(++nOut2)*dtOutput;
 #ifdef _DUMP
       DumpSliceSummary(sx,sy,sz,sPtr,dt,it,pc);
 #endif
@@ -528,6 +528,12 @@ CloseSliceFile(sPtr);
 
   fprintf(stderr, "\nBackward took %8.5lf sec\n", b_total);
   fprintf(stderr, "Read took  %8.5lf sec\n\n", b_io_total);
+
+
+  fprintf(stderr, "forward,%.5lf\n", f_total);
+  fprintf(stderr, "write,%.5lf\n", f_io_total);
+  fprintf(stderr, "backward,%.5lf\n", b_total);
+  fprintf(stderr, "read,%.5lf\n", b_io_total);
 
 CloseSliceFile2(sPtr2);
 

@@ -198,8 +198,10 @@ SlicePtr OpenSliceFile2(int ixStart, int ixEnd,
 // DumpSliceFile: appends one array to an opened RFS file 
 
 
-void DumpSliceFile2(int sx, int sy, int sz,
+void DumpSliceFile2(int sx, int sy, int sz, int it,
 		   float *arrP, SlicePtr p) {
+
+      fseek(p->fpBinary, it * (p->izEnd - p->izStart + 1) * (p->iyEnd - p->iyStart + 1) * (p->ixEnd-p->ixStart+1), SEEK_SET);
 
       fread((void *) (arrP),
 	     sizeof(float),
