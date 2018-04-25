@@ -317,8 +317,8 @@ int main(int argc, char** argv) {
   float *pback=NULL;
   pback = (float *) malloc(sx*sy*sz*sizeof(float)); 
 
-  float *out=NULL;
-  out = (float *) malloc(sx*sy*sz*sizeof(float)); 
+  float *outt=NULL;
+  outt = (float *) malloc(sx*sy*sz*sizeof(float)); 
 
   float *pp=NULL;
   pp = (float *) malloc(sx*sy*sz*sizeof(float)); 
@@ -331,7 +331,7 @@ int main(int argc, char** argv) {
   for (i=0; i<sx*sy*sz; i++) {
     pp[i]=0.0f; pc[i]=0.0f; 
     qp[i]=0.0f; qc[i]=0.0f;
-    pback[i]=0.0f; out[i]=0.0f;
+    pback[i]=0.0f; outt[i]=0.0f;
   }
   InsertSource(dt,0,iSource,pc,qc);
   InsertSource(dt,0,iSource,pp,qp);
@@ -478,7 +478,7 @@ CloseSliceFile(sPtr);
           ch1dxy[0:sx*sy*sz], ch1dyz[0:sx*sy*sz], ch1dxz[0:sx*sy*sz], \
           v2px[0:sx*sy*sz], v2pz[0:sx*sy*sz], v2sz[0:sx*sy*sz], \
           v2pn[0:sx*sy*sz], pc[0:sz*sy*sz], qc[0:sz*sy*sz], \
-          pp[0:sx*sy*sz], pback[0:sx*sy*sz], qp[0:sx*sy*sz], fatAbsorb[sx*sy*sz]) copyout out[0:sx*sy*sz]
+          pp[0:sx*sy*sz], pback[0:sx*sy*sz], qp[0:sx*sy*sz], fatAbsorb[sx*sy*sz]) copyout(outt[0:sx*sy*sz])
 
     #endif
     for (it=1; it<=st; it++) {
@@ -517,8 +517,8 @@ CloseSliceFile(sPtr);
       #pragma acc update device(pback[0:sx*sy*sz])
 
       Compare(sx, sy, sz, bord,
-        pp, pback, out);
-      
+        pp, pback, outt);
+
       tOut=(++nOut)*dtOutput;
 #ifdef _DUMP
       DumpSliceSummary(sx,sy,sz,sPtr,dt,it,pc);
