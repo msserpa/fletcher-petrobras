@@ -533,7 +533,9 @@ CloseSliceFile(sPtr);
   fprintf(stderr, "forward,%.5lf\n", f_total);
   fprintf(stderr, "write,%.5lf\n", f_io_total);
   fprintf(stderr, "backward,%.5lf\n", b_total);
-  fprintf(stderr, "read,%.5lf\n", b_io_total);
+  fprintf(stderr, "read,%.5lf\n\n", b_io_total);
+  fprintf(stderr, "alg1,%.5lf\n", f_total + f_io_total + b_total + b_io_total);
+  fprintf(stderr, "alg3,%.5lf\n\n", f_total + 2 * b_total);
 
 CloseSliceFile2(sPtr2);
 
