@@ -446,8 +446,8 @@ int main(int argc, char** argv) {
     }
   }
 
-  fprintf(stderr, "Prop took %.5lf sec\n", c_total);
-  fprintf(stderr, "I/O took %.5lf sec\n", io_total);
+  fprintf(stderr, "\nProp took %.5lf sec\n", c_total);
+  fprintf(stderr, "I/O took  %.5lf sec\n\n", io_total);
   CloseSliceFile(sPtr);
 
   exit(0);    
