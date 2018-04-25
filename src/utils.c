@@ -142,7 +142,6 @@ void DumpSliceFile(int sx, int sy, int sz,
   int iy, iz;
   
   // dump section to binary file
-  fprintf(stderr, "writting %d Bytes\n", (p->ixEnd-p->ixStart+1) * sizeof(float));
   for (iz=p->izStart; iz<=p->izEnd; iz++)
     for (iy=p->iyStart; iy<=p->iyEnd; iy++) 
       fwrite((void *) (arrP+ind(p->ixStart,iy,iz)),
@@ -224,11 +223,4 @@ void   DumpSliceSummary(int sx, int sy, int sz,
       }
   printf("Slice of %s at iteration; %5.5d; time(s); %f; max; %9.2e; min; %9.2e; src; %9.2e;\n",
 	 p->fNameHeader, it, dt*(float)it, maxP, minP, Source(dt,it));
-}
-
-
-double ms_gettime(){
-  struct timeval tr;
-  gettimeofday(&tr, NULL);
-  return (double) tr.tv_sec + (double) tr.tv_usec / 1000000.0;
 }

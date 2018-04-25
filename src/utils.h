@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/time.h>
 #include <math.h>
 #include <string.h>
 #include "map.h"
@@ -85,7 +84,5 @@ void CloseSliceFile(SlicePtr p);
 void DumpSliceSummary(int sx, int sy, int sz,
 		      SlicePtr p,
 		      float dt, int it, float *arrP);
-
-double ms_gettime();
 
 #endif

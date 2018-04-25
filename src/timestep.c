@@ -1,5 +1,8 @@
 #include "timestep.h"
+
+#ifdef _DUMP
 #include <omp.h>
+#endif
 
 #pragma acc routine(Der2) seq
 #pragma acc routine(DerCross) seq
@@ -32,12 +35,17 @@ void Propagate(int sx, int sy, int sz, int bord,
   float dxyinv=1.0/(dx*dy);
   float dxzinv=1.0/(dx*dz);
   float dyzinv=1.0/(dy*dz);
+
+#ifdef _DUMP
   double startTime, endTime;
+#endif
 
   // solve both equations in all internal grid points, 
   // including absortion zone
-    
+
+#ifdef _DUMP
   startTime = omp_get_wtime();
+#endif
 
 #ifndef _OPENACC
   
@@ -132,8 +140,10 @@ void Propagate(int sx, int sy, int sz, int bord,
 	}
       }
     } // end nested for loops
+#ifdef _DUMP
   endTime = omp_get_wtime();
   printf("Timestep %d calculated in %8.6f secs.\n", it, endTime - startTime);
+#endif
 }
 
 
