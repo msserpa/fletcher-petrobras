@@ -508,7 +508,7 @@ CloseSliceFile(sPtr);
 
 #endif
       b_io_start = omp_get_wtime();
-      DumpSliceFile2(sx,sy,sz,nOut - nOut2,pback,sPtr2);
+      DumpSliceFile2(sx,sy,sz,nOut - nOut2 - 1,pback,sPtr2);
       b_io_stop = omp_get_wtime();
       b_io_total += (b_io_stop - b_io_start);
 
