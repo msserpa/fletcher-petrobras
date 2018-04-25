@@ -474,7 +474,7 @@ CloseSliceFile(sPtr);
           ch1dxy[0:sx*sy*sz], ch1dyz[0:sx*sy*sz], ch1dxz[0:sx*sy*sz], \
           v2px[0:sx*sy*sz], v2pz[0:sx*sy*sz], v2sz[0:sx*sy*sz], \
           v2pn[0:sx*sy*sz], pc[0:sz*sy*sz], qc[0:sz*sy*sz], \
-          pp[0:sx*sy*sz], qp[0:sx*sy*sz], fatAbsorb[sx*sy*sz])
+          pp[0:sx*sy*sz], pback[0:sx*sy*sz], qp[0:sx*sy*sz], fatAbsorb[sx*sy*sz])
 
     #endif
     for (it=1; it<=st; it++) {
@@ -510,7 +510,8 @@ CloseSliceFile(sPtr);
 
       fprintf(stderr, "step %3d read %.2lf MB in %8.5lf sec\n", it, (sPtr2->izEnd - sPtr2->izStart + 1) * (sPtr2->iyEnd - sPtr2->iyStart + 1) * (sPtr2->ixEnd-sPtr2->ixStart+1) * sizeof(float) / 1024.0 / 1024.0, b_io_stop - b_io_start);
 
-      // #pragma acc update device(pback[0:sx*sy*sz])
+      printf("")
+       #pragma acc update device(pback[0:sx*sy*sz])
 
       tOut=(++nOut)*dtOutput;
 #ifdef _DUMP
