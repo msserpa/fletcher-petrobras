@@ -361,6 +361,7 @@ int main(int argc, char** argv) {
 #endif
 
   double io_start, io_stop, io_total = 0.0;
+  double c_start, c_stop, c_total = 0.0;
 
   // slices
 
@@ -404,6 +405,7 @@ int main(int argc, char** argv) {
 
 #endif
   for (it=1; it<=st; it++) {
+    c_start = omp_get_wtime();
 
     Propagate(sx, sy, sz, bord,
 	      dx, dy, dz, dt, it,
@@ -419,6 +421,9 @@ int main(int argc, char** argv) {
 #if ((defined _ABSOR_SPHERE) || (defined _ABSOR_SQUARE))
     AbsorbingBoundary(sx, sy, sz, fatAbsorb, pc, qc);
 #endif
+
+    c_stop = omp_get_wtime();
+    c_total += (c_stop - c_start);
 
     tSim=it*dt;
     if (tSim >= tOut) {
@@ -441,6 +446,7 @@ int main(int argc, char** argv) {
     }
   }
 
+  fprintf(stderr, "Prop took %.5lf sec\n", c_total);
   fprintf(stderr, "I/O took %.5lf sec\n", io_total);
   CloseSliceFile(sPtr);
 
