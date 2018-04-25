@@ -15,7 +15,7 @@ enum Form {ISO, VTI, TTI};
 #define ARGS 11          // tokens in executable command
 #define dtOutput 0.01    // time spacing for section output
 
-#define _DUMP       // execution summary dump
+//#define _DUMP       // execution summary dump
 //#undef  _DUMP     // execution summary dump
 //#define _ABSOR_SQUARE    // use square absortion zone
 #undef  _ABSOR_SQUARE  // don't use absortion zone
