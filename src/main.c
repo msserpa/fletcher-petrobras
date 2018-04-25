@@ -382,9 +382,9 @@ int main(int argc, char** argv) {
   float tSim=0.0;
   int nOut=1;
   float tOut=nOut*dtOutput;
-  io_start = omp_wget_time();
+  io_start = omp_get_wtime();
   DumpSliceFile(sx,sy,sz,pc,sPtr);
-  io_stop = omp_wget_time();
+  io_stop = omp_get_wtime();
   io_total += (io_stop - io_start);
   fprintf(stderr, "step 0 writted %.2lf MB in %.5lf sec\n", (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float) / 1024.0 / 1024.0, io_stop - io_start);
 #ifdef _DUMP
@@ -427,9 +427,9 @@ int main(int argc, char** argv) {
 #pragma acc update host(pc[0:sx*sy*sz])
 
 #endif
-      io_start = omp_wget_time();
+      io_start = omp_get_wtime();
       DumpSliceFile(sx,sy,sz,pc,sPtr);
-      io_stop = omp_wget_time();
+      io_stop = omp_get_wtime();
       io_total += (io_stop - io_start);
 
       fprintf(stderr, "step %d writted %.2lf MB in %.5lf sec\n", it, (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float) / 1024.0 / 1024.0, io_stop - io_start);
@@ -446,3 +446,4 @@ int main(int argc, char** argv) {
 
   exit(0);    
 }
+  
