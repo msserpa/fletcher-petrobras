@@ -385,11 +385,11 @@ int main(int argc, char** argv) {
   float tSim=0.0;
   int nOut=1;
   float tOut=nOut*dtOutput;
-  io_start = omp_get_wtime();
+  f_io_start = omp_get_wtime();
   DumpSliceFile(sx,sy,sz,pc,sPtr);
-  io_stop = omp_get_wtime();
-  io_total += (io_stop - io_start);
-  fprintf(stderr, "step %3d writted %.2lf MB in %8.5lf sec\n", 0, (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float) / 1024.0 / 1024.0, io_stop - io_start);
+  f_io_stop = omp_get_wtime();
+  f_io_total += (f_io_stop - f_io_start);
+    fprintf(stderr, "step %3d writted %.2lf MB in %8.5lf sec\n", 0, (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float) / 1024.0 / 1024.0, f_io_stop - f_io_start);
 #ifdef _DUMP
   DumpSlicePtr(sPtr);
   DumpSliceSummary(sx,sy,sz,sPtr,dt,it,pc);
