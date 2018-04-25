@@ -360,6 +360,8 @@ int main(int argc, char** argv) {
   }
 #endif
 
+  double io_start, io_stop, io_total = 0.0;
+
   // slices
 
 //PPL  char fName[10];
@@ -380,8 +382,11 @@ int main(int argc, char** argv) {
   float tSim=0.0;
   int nOut=1;
   float tOut=nOut*dtOutput;
-  fprintf(stderr, "step 0 is writting %.2lf MB\n", (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float) / 1024.0 / 1024.0);
+  io_start = omp_wget_time();
   DumpSliceFile(sx,sy,sz,pc,sPtr);
+  io_stop = omp_wget_time();
+  io_total += (io_stop - io_start);
+  fprintf(stderr, "step 0 writted %.2lf MB in %.5lf sec\n", (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float) / 1024.0 / 1024.0, io_stop - io_start);
 #ifdef _DUMP
   DumpSlicePtr(sPtr);
   DumpSliceSummary(sx,sy,sz,sPtr,dt,it,pc);
@@ -417,14 +422,18 @@ int main(int argc, char** argv) {
 
     tSim=it*dt;
     if (tSim >= tOut) {
-      fprintf(stderr, "step %d is writting %.2lf MB\n", it, (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float) / 1024.0 / 1024.0);
-
 #ifndef ACC_MANAGED
 
 #pragma acc update host(pc[0:sx*sy*sz])
 
 #endif
+      io_start = omp_wget_time();
       DumpSliceFile(sx,sy,sz,pc,sPtr);
+      io_stop = omp_wget_time();
+      io_total += (io_stop - io_start);
+
+      fprintf(stderr, "step %d writted %.2lf MB in %.5lf sec\n", it, (sPtr->izEnd - sPtr->izStart + 1) * (sPtr->iyEnd - sPtr->iyStart + 1) * (sPtr->ixEnd-sPtr->ixStart+1) * sizeof(float) / 1024.0 / 1024.0, io_stop - io_start);
+
       tOut=(++nOut)*dtOutput;
 #ifdef _DUMP
       DumpSliceSummary(sx,sy,sz,sPtr,dt,it,pc);
@@ -432,6 +441,7 @@ int main(int argc, char** argv) {
     }
   }
 
+  fprintf(stderr, "I/O took %.5lf sec\n", io_total);
   CloseSliceFile(sPtr);
 
   exit(0);    
