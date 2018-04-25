@@ -371,7 +371,6 @@ int main(int argc, char** argv) {
   double f_io_start, f_io_stop, f_io_total = 0.0;
   double b_start, b_stop, b_total = 0.0;
   double b_io_start, b_io_stop, b_io_total = 0.0;
-  double c_start, c_stop, c_total = 0.0;
 
   // slices
 
@@ -516,11 +515,10 @@ CloseSliceFile(sPtr);
       fprintf(stderr, "step %3d read %.2lf MB in %8.5lf sec\n", it, (sPtr2->izEnd - sPtr2->izStart + 1) * (sPtr2->iyEnd - sPtr2->iyStart + 1) * (sPtr2->ixEnd-sPtr2->ixStart+1) * sizeof(float) / 1024.0 / 1024.0, b_io_stop - b_io_start);
 
       #pragma acc update device(pback[0:sx*sy*sz])
-c_start = omp_get_wtime();
+
       Compare(sx, sy, sz, bord,
         pp, pback, outt);
-c_stop = omp_get_wtime();
-c_total += (c_stop - c_start);
+
       tOut=(++nOut)*dtOutput;
 #ifdef _DUMP
       DumpSliceSummary(sx,sy,sz,sPtr,dt,it,pc);
@@ -530,7 +528,6 @@ c_total += (c_stop - c_start);
 
   fprintf(stderr, "\nBackward took %8.5lf sec\n", b_total);
   fprintf(stderr, "Read took  %8.5lf sec\n\n", b_io_total);
-  fprintf(stderr, "Compare took  %8.5lf sec\n\n", c_total);
 
 CloseSliceFile2(sPtr2);
 
