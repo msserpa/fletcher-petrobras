@@ -225,7 +225,7 @@ void DumpSliceFile(int sx, int sy, int sz,
        sizeof(float),
        p->ixEnd-p->ixStart+1,
        p->fpBinary);
-
+//fsync(fileno(p->fpBinary));
   // increase it count
   
   p->itCnt++;
