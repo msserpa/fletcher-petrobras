@@ -1,12 +1,12 @@
 #!/bin/bash
 # <execname> <fNameSec> <nx> <ny> <nz> <absorb> <dx> <dy> <dz> <dt> <tmax>
 
-if [ $# -lt 1 ]
+if [ $# -lt 2 ]
 then
-	echo "Usage : $0 <size>"
+	echo "Usage : $0 <size> <I/O step>"
 	exit 1
 fi
 export ACC_DEVICE_NUM=1;
 rsync -a -v ../src/ModelagemFletcher.exe .
-time ./ModelagemFletcher.exe $1 $1 $1
+time ./ModelagemFletcher.exe $1 $1 $1 $2
 

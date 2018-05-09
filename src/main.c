@@ -12,7 +12,7 @@
 enum Form {ISO, VTI, TTI};
 
 #define MI 0.2           // stability factor to compute dt
-#define ARGS 11          // tokens in executable command
+#define ARGS 5          // tokens in executable command
 // #define dtOutput 0.004    // time spacing for section output
 
 //#define _DUMP       // execution summary dump
@@ -68,13 +68,13 @@ int main(int argc, char** argv) {
   nx=atoi(argv[1]);
   ny=atoi(argv[2]);
   nz=atoi(argv[3]);
-  absorb=32
-  dx=12.5
-  dy=12.5
-  dz=12.5
+  absorb=32;
+  dx=12.5;
+  dy=12.5;
+  dz=12.5;
   dt=0.0010;
   tmax=0.2;
-  float dtOutput = 0.004; // time spacing for section output
+  float dtOutput = atoi(argv[4])/1000.0; // time spacing for section output
 
   // verify problem formulation
 
