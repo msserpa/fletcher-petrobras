@@ -3,7 +3,6 @@
 
 // Source: compute source value at time it*dt
 
-#pragma acc routine seq
 float Source(float dt, int it){
 
   float tf, fc, fct, expo;
@@ -36,7 +35,6 @@ void InsertSourceTimestep(float dt, int it, int iSource,
 		     float * restrict p, float * restrict q) {
   float src;
 
-#pragma acc kernels present(p, q)
     //PPL laço inserido abaixo para que a cláusula present funcione
     // descoberto na base da tentativa e erro
     for (int i = 0; i < 1; i++) {

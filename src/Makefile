@@ -1,20 +1,9 @@
 # Environment and compilation flags at Exaflop
 #   module load gompi
-#CC=gcc 
+CC=gcc 
 # compilation at MacBook
 #CC=gcc-7
-#CFLAGS=-O3 -std=c11 -fopenmp -Wall
-
-# compilation with PGI
-#   module load PGI
-CC=pgcc
-# OpenMP only
-#CFLAGS=-mp -O3
-# OpenACC without UM
-CFLAGS=-mp -O3 -acc -ta=tesla:cc60
-# OpenACC with UM
-#CFLAGS=-mp -acc -O3 -ta=tesla:cc60,managed -D ACC_MANAGED
-
+CFLAGS=-O3 -std=c11 -fopenmp 
 LIBS=-lm 
 
 OBJ1=\

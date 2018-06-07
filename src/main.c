@@ -405,15 +405,6 @@ int main(int argc, char** argv) {
   
   // time advance
 
-#ifndef ACC_MANAGED
-
-#pragma acc data copyin(ch1dxx[0:sx*sy*sz], ch1dyy[0:sx*sy*sz], ch1dzz[0:sy*sy*sz],	\
-			ch1dxy[0:sx*sy*sz], ch1dyz[0:sx*sy*sz], ch1dxz[0:sx*sy*sz], \
-			v2px[0:sx*sy*sz], v2pz[0:sx*sy*sz], v2sz[0:sx*sy*sz], \
-			v2pn[0:sx*sy*sz], pc[0:sz*sy*sz], qc[0:sz*sy*sz], \
-			pp[0:sx*sy*sz], qp[0:sx*sy*sz], fatAbsorb[sx*sy*sz])
-
-#endif
   for (it=1; it<=st; it++) {
     f_start = omp_get_wtime();
 
@@ -426,7 +417,7 @@ int main(int argc, char** argv) {
 
     TimeForward(&pp, &pc, &qp, &qc);
 
-    InsertSourceTimestep(dt,it,iSource,pc,qc);
+    InsertSource(dt,it,iSource,pc,qc);
 
 #if ((defined _ABSOR_SPHERE) || (defined _ABSOR_SQUARE))
     AbsorbingBoundary(sx, sy, sz, fatAbsorb, pc, qc);
@@ -437,11 +428,6 @@ int main(int argc, char** argv) {
 
     tSim=it*dt;
     if (tSim >= tOut) {
-#ifndef ACC_MANAGED
-
-#pragma acc update host(pc[0:sx*sy*sz])
-
-#endif
       f_io_start = omp_get_wtime();
       DumpSliceFile(sx,sy,sz,pc,sPtr);
       f_io_stop = omp_get_wtime();
@@ -473,15 +459,6 @@ CloseSliceFile(sPtr);
   int nOut2=1;
   float tOut2=nOut2*dtOutput;
 
-    #ifndef ACC_MANAGED
-
-    #pragma acc data copyin(ch1dxx[0:sx*sy*sz], ch1dyy[0:sx*sy*sz], ch1dzz[0:sy*sy*sz], \
-          ch1dxy[0:sx*sy*sz], ch1dyz[0:sx*sy*sz], ch1dxz[0:sx*sy*sz], \
-          v2px[0:sx*sy*sz], v2pz[0:sx*sy*sz], v2sz[0:sx*sy*sz], \
-          v2pn[0:sx*sy*sz], pc[0:sz*sy*sz], qc[0:sz*sy*sz], \
-          pp[0:sx*sy*sz], pback[0:sx*sy*sz], qp[0:sx*sy*sz], fatAbsorb[sx*sy*sz]) copyout(outt[0:sx*sy*sz])
-
-    #endif
     for (it=1; it<=st; it++) {
     b_start = omp_get_wtime();
 
@@ -505,17 +482,12 @@ CloseSliceFile(sPtr);
 
     tSim2=it*dt;
     if (tSim2 >= tOut2) {
-#ifndef ACC_MANAGED
-
-#endif
       b_io_start = omp_get_wtime();
       DumpSliceFile2(sx,sy,sz,nOut - nOut2 - 1,pback,sPtr2);
       b_io_stop = omp_get_wtime();
       b_io_total += (b_io_stop - b_io_start);
 
       fprintf(stderr, "step %3d read %.2lf MB in %8.5lf sec\n", it, (sPtr2->izEnd - sPtr2->izStart + 1) * (sPtr2->iyEnd - sPtr2->iyStart + 1) * (sPtr2->ixEnd-sPtr2->ixStart+1) * sizeof(float) / 1024.0 / 1024.0, b_io_stop - b_io_start);
-
-      #pragma acc update device(pback[0:sx*sy*sz])
 
       Compare(sx, sy, sz, bord,
         pp, pback, outt);

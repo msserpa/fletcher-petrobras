@@ -1,11 +1,5 @@
 #include "timestep.h"
-
-#ifdef _DUMP
 #include <omp.h>
-#endif
-
-#pragma acc routine(Der2) seq
-#pragma acc routine(DerCross) seq
 
 // Propagate: using Fletcher's equations, propagate waves one dt,
 //            either forward or backward in time
@@ -14,31 +8,10 @@
 void Compare(int sx, int sy, int sz, int bord,
 	       float * restrict pp, float * restrict pback, float * restrict out) {
   int ix, iy, iz, i;
-
-
-#ifndef _OPENACC
   
 #pragma omp parallel for private(ix, iy, iz, i)
-#else
-
-#ifndef ACC_MANAGED
-
-#pragma acc kernels							\
-  present(pp[0:sx*sy*sz], pback[0:sx*sy*sz])
-
-#else
-
-#pragma acc kernels
-
-#endif
-
-#endif
-
-#pragma acc loop independent
     for (iz=bord; iz<sz-bord; iz++) {
-#pragma acc loop independent
       for (iy=bord; iy<sy-bord; iy++) {
-#pragma acc loop independent
 	for (ix=bord; ix<sx-bord; ix++) {
 	  i=ind(ix,iy,iz);
 	      
@@ -85,8 +58,6 @@ void Propagate(int sx, int sy, int sz, int bord,
   startTime = omp_get_wtime();
 #endif
 
-#ifndef _OPENACC
-  
 #pragma omp parallel for private(ix, iy, iz, i,				\
 			     pxx, pyy, pzz, pxy, pyz, pxz,		\
 			     qxx, qyy, qzz, qxy, qyz, qxz,		\
@@ -96,33 +67,10 @@ void Propagate(int sx, int sy, int sz, int bord,
 			     h1q, h2q,					\
 			     h1pmq, h2pmq,				\
 			     rhsp, rhsq)
-#else
-
-#ifndef ACC_MANAGED
-
-#pragma acc kernels							\
-  present(ch1dxx[0:sx*sy*sz], ch1dyy[0:sx*sy*sz], ch1dzz[0:sy*sy*sz],	\
-	  ch1dxy[0:sx*sy*sz], ch1dyz[0:sx*sy*sz], ch1dxz[0:sx*sy*sz],	\
-	  v2px[0:sx*sy*sz], v2pz[0:sx*sy*sz], v2sz[0:sx*sy*sz],		\
-	  v2pn[0:sx*sy*sz], pc[0:sz*sy*sz], qc[0:sz*sy*sz],		\
-	  pp[0:sx*sy*sz], qp[0:sx*sy*sz])
-
-#else
-
-#pragma acc kernels
-
-#endif
-
-#endif
-
-#pragma acc loop independent
     for (iz=bord; iz<sz-bord; iz++) {
-#pragma acc loop independent
       for (iy=bord; iy<sy-bord; iy++) {
-#pragma acc loop independent
 	for (ix=bord; ix<sx-bord; ix++) {
-	  i=ind(ix,iy,iz);
-	      
+	  i=ind(ix,iy,iz); 
 	  // p derivatives, H1(p) and H2(p)
 	  
 	  pxx= Der2(pc, i, strideX, dxxinv);

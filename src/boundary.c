@@ -109,26 +109,7 @@ void AbsorbingBoundary(int sx, int sy, int sz,
     exit(-1);
   }
 
-#ifndef _OPENACC
-
 #pragma omp parallel for 
-
-#else
-
-#ifndef ACC_MANAGED
-
-#pragma acc kernels present(fatAbsorb, p, q)
-
-#else
-
-#pragma acc kernels
-
-#endif
-
-#pragma acc loop independent
-
-#endif
-
   for (i=0; i<sx*sy*sz; i++) {
     p[i]*=fatAbsorb[i];
     q[i]*=fatAbsorb[i];
@@ -222,7 +203,6 @@ void RandomVelocityBoundary(int sx, int sy, int sz,
 	}
 	// null speed at border
 	else
-	//PPL added {} surrounding vpz and vsv lines below
 	{
 	  vpz[i]=0.0;
 	  vsv[i]=0.0;

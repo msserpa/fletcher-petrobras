@@ -3,7 +3,6 @@
 
 // Der2: computes second derivative
 
-#pragma acc routine seq
 float Der2(float *p, int i, int s, float d2inv){
   float res;
   res=(K0*p[i]+
@@ -19,7 +18,6 @@ float Der2(float *p, int i, int s, float d2inv){
 // DerCross: computes cross derivative
 
 
-#pragma acc routine seq
 float DerCross(float *p, int i, int s11, int s21, float dinv){
   float res;
   int s12=2*s11;

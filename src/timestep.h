@@ -10,6 +10,9 @@
 #include "derivatives.h"
 
 
+void Compare(int sx, int sy, int sz, int bord,
+               float * restrict pp, float * restrict pback, float * restrict out);
+
 // Propagate: using Fletcher's equations, propagate waves one dt,
 //            either forward or backward in time
 
