@@ -1,9 +1,6 @@
 # Environment and compilation flags at Exaflop
-#   module load gompi
-CC=gcc 
-# compilation at MacBook
-#CC=gcc-7
-CFLAGS=-O3 -std=c11 -fopenmp 
+CC=icc 
+CFLAGS=-std=c11 -qopenmp -qopt-report=5 -Wall -Wextra -xHost
 LIBS=-lm 
 
 OBJ1=\
@@ -51,4 +48,4 @@ map.o:	map.c map.h
 	$(CC) $(CFLAGS) $*.c
 
 clean:
-	rm -f *.o $(TARGET)
+	rm -f *.o *.optrpt $(TARGET)
