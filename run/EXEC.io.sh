@@ -7,6 +7,6 @@ then
 	exit 1
 fi
 export ACC_DEVICE_NUM=1;
-rsync -a -v ../src/ModelagemFletcher.exe .
-time ./ModelagemFletcher.exe $1 $1 $1 $2
+rsync -a -v ../src/ModelagemFletcher.io.exe .
+time ./ModelagemFletcher.io.exe $1 $1 $1 $2
 

@@ -11,18 +11,25 @@ OBJ1=\
 	boundary.o \
 	map.o
 
-OBJ=main.o $(OBJ1)
+OBJ=main.no.io.o $(OBJ1)
+OBJIO=main.io.o $(OBJ1)
 
-TARGET = ModelagemFletcher.exe
+TARGET = ModelagemFletcher.no.io.exe
+TARGETIO = ModelagemFletcher.io.exe
 
-all: $(TARGET)
+all: $(TARGET) $(TARGETIO)
 
 $(TARGET): 	$(OBJ)
 	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ) $(LIBS)
 
+$(TARGETIO):      $(OBJIO)
+	$(CC) $(CFLAGS) -o $(TARGETIO) $(OBJIO) $(LIBS)
 
-main.o:	main.c $(OBJ1)
-	$(CC) -c $(CFLAGS) main.c
+main.no.io.o:	main.no.io.c $(OBJ1)
+	$(CC) -c $(CFLAGS) main.no.io.c
+
+main.io.o:   main.io.c $(OBJ1)
+	$(CC) -c $(CFLAGS) main.io.c
 
 timestep.o:	timestep.c timestep.h derivatives.o source.o map.o
 	$(CC) -c $(CFLAGS) timestep.c
@@ -48,4 +55,4 @@ map.o:	map.c map.h
 	$(CC) $(CFLAGS) $*.c
 
 clean:
-	rm -f *.o *.optrpt $(TARGET)
+	rm -f *.o *.optrpt $(TARGET) $(TARGETIO)
